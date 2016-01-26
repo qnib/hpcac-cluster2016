@@ -1,0 +1,49 @@
+base:
+    environment:
+     - DC_NAME=samza
+     - COLLECT_METRICS=false
+     - FORWARD_TO_KAFKA=true
+     - SKIP_PSWATCH=true
+     - CONSUL_CLUSTER_IPS=consul1,consul2,consul4
+    net: samza
+    dns:
+     - 127.0.0.1
+     - 10.8.8.8
+    dns_search:
+     - service.consul
+     - node.consul
+    privileged: true
+
+consul:
+    extends:
+      file: base.yml
+      service: base
+    image: 192.168.12.11:5000/qnib/consul
+    environment:
+     - CONSUL_SKIP_CURL=true
+     - CONSUL_BOOTSTRAP_EXPECT=2
+
+kafka:
+    extends:
+      file: base.yml
+      service: base
+    image: 192.168.12.11:5000/qnib/kafka
+    environment:
+     - KAFKA_MIN_INSTANCES=2
+
+zookeeper:
+    extends:
+      file: base.yml
+      service: base
+    image: 192.168.12.11:5000/qnib/zookeeper
+
+samza:
+    extends:
+      file: base.yml
+      service: base
+    image: 192.168.12.11:5000/qnib/u-samza
+    environment:
+     - RUN_SERVER=false
+     - BOOTSTRAP_CONSUL=false
+     - SUPERVISOR_SKIP_SRV=zookeeper,kafka
+     - CONSUL_RM_SRV_CHECK=zookeeper,kafka

@@ -1,0 +1,44 @@
+carbon:
+    hostname: carbon
+    container_name: carbon
+    image: qnib/carbon
+    extends:
+      file: ../base/base.yml
+      service: base
+    volumes:
+     - /var/lib/carbon/whisper/
+    environment:
+     - SERVICE_2003_NAME=carbon
+     - FORWARD_TO_LOGSTASH=true
+     - constraint:node==docker1
+    ports:
+     - 2003:2003
+
+gapi:
+    hostname: graphite-api
+    container_name: graphite-api
+    image: qnib/graphite-api
+    extends:
+      file: ../base/base.yml
+      service: base
+    environment:
+     - FORWARD_TO_LOGSTASH=true
+     - SERVICE_8888_NAME=graphite-api
+     - constraint:node==docker1
+    ports:
+     - 8888:80
+    volumes_from:
+     - carbon
+    privileged: true
+
+grafana2:
+    image: qnib/grafana2
+    extends:
+      file: ../base/base.yml
+      service: base
+    container_name: grafana2
+    ports:
+     - "3000:3000"
+    hostname: grafana
+    environment:
+     - constraint:node==docker1

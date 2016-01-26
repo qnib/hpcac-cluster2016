@@ -1,0 +1,56 @@
+redis:
+    image: qnib/redis
+    hostname: redis
+    container_name: redis
+    extends:
+      file: ../base/base.yml
+      service: base
+    ports:
+    - "6379:6379"
+    environment:
+     - constraint:node==docker1
+
+rabbitmq:
+    image: qnib/rabbitmq
+    extends:
+      file: ../base/base.yml
+      service: base
+    ports:
+     - "55672:55672"
+     - "15672:15672"
+     - "5672:5672"
+    hostname: rabbitmq
+    container_name: rabbitmq
+    environment:
+     - RABBITMQ_VHOSTS=sensu:sensu:pass
+     - constraint:node==docker1
+
+sensu:
+    image: qnib/sensu
+    hostname: sensu
+    container_name: sensu
+    extends:
+      file: ../base/base.yml
+      service: base
+    ports:
+     - "4567:4567"
+    volumes:
+      - /opt/nfs/sensu/conf.d/slack/:/etc/sensu/conf.d/slack/
+    environment:
+     - SENSU_SERVER=true
+     - SENSU_API=true
+     - SENSU_CLIENT=true
+     - constraint:node==docker1
+
+uchiwa:
+    image: qnib/sensu-uchiwa
+    hostname: uchiwa
+    container_name: uchiwa
+    extends:
+      file: ../base/base.yml
+      service: base
+    ports:
+     - "3000:3000"
+    environment:
+     - constraint:node==venus001
+

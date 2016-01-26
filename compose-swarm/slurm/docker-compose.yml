@@ -1,0 +1,11 @@
+slurmctld:
+    image: 192.168.12.11:5000/qnib/slurmctld
+    extends:
+      file: ../base/base.yml
+      service: base
+    hostname: slurmctld
+    container_name: slurmctld
+    ports:
+    - "16817:6817"
+    environment:
+     - constraint:node==venus002
