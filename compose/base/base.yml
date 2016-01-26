@@ -1,0 +1,20 @@
+base:
+    net: global
+    volumes:
+    - /scratch/:/scratch/
+    dns: 127.0.0.1
+    privileged: true
+
+server:
+    extends:
+      file: base.yml
+      service: base
+    environment:
+     - DC_NAME=dc1
+     - CONSUL_CLUSTER_IPS=consul
+     - COLLECT_METRICS=true
+     - SUPERVISOR_SKIP_SRV=sensu-api,sensu-server
+     - SENSU_CLIENT=true
+     - SENSU_FORCE_CLIENT=true
+     - SENSU_RABBITMQ_HOST=${SENSU_RABBITMQ_HOST}
+     - SENSU_RABBITMQ_PASSWD=${SENSU_RABBITMQ_HOST}

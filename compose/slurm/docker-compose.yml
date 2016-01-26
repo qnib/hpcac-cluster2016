@@ -1,0 +1,9 @@
+slurmctld:
+    image: qnib/slurmctld
+    extends:
+      file: ../base/base.yml
+      service: base
+    hostname: slurmctld
+    container_name: slurmctld
+    ports:
+    - "16817:6817"

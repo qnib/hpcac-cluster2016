@@ -1,0 +1,12 @@
+consul:
+    image: qnib/consul
+    net: global
+    hostname: consul
+    container_name: consul
+    environment:
+     - DC_NAME=dc1
+     - RUN_SERVER=true
+     - FORWARD_TO_KAFKA=false
+     - CONSUL_BOOTSTRAP_EXPECT=1
+    ports:
+     - "18500:8500"

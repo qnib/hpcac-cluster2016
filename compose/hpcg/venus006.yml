@@ -1,0 +1,6 @@
+hpcg6:
+    extends:
+      file: base.yml
+      service: hpcg
+    hostname: hpcg6
+    container_name: hpcg6

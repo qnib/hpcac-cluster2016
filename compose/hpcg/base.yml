@@ -1,0 +1,16 @@
+base:
+    extends:
+      file: ../base/base.yml
+      service: base
+    volumes:
+    - /chome/:/chome/
+
+hpcg:
+    image: qnib/hpcg
+    extends:
+      file: base.yml
+      service: base
+    devices:
+     - "/dev/infiniband/uverbs0:/dev/infiniband/uverbs0"
+     - "/dev/infiniband/rdma_cm:/dev/infiniband/rdma_cm"
+

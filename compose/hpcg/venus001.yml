@@ -1,0 +1,22 @@
+hpcg1:
+    hostname: hpcg1
+    container_name: hpcg1
+    extends:
+      file: base.yml
+      service: hpcg
+    ulimits:
+      nofile:
+        soft: 20000
+        hard: 40000
+      memlock:
+        soft: 68719476736
+        hard: 68719476736
+    environment:
+     - DC_NAME=dc1
+     - CONSUL_CLUSTER_IPS=consul
+     - COLLECT_METRICS=true
+     - SUPERVISOR_SKIP_SRV=sensu-api,sensu-server
+     - SENSU_CLIENT=true
+     - SENSU_FORCE_CLIENT=true
+     - SENSU_RABBITMQ_HOST=${SENSU_RABBITMQ_HOST}
+     - SENSU_RABBITMQ_PASSWD=${SENSU_RABBITMQ_HOST}
