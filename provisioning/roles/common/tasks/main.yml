@@ -1,0 +1,48 @@
+---
+# file: roles/common/tasks/main.yml
+
+- name: remove depreciated repos
+  file: path={{ item }} state=absent
+  with_items:
+    - orangefort.repo
+    - qnib.repo
+  tags: common
+
+- name: disable firewall
+  service: name=firewalld enabled=no state=stopped
+  tags: common
+
+- name: disable selinux within config
+  tags: base
+  selinux: state=disabled
+  tags: common
+  
+- name: ensure some default rpm are present
+  tags:
+    - rpm
+  when: not is_container is defined
+  yum: pkg={{ item }} state=present
+  with_items:
+     - vim
+     - nc
+     - tmux
+     - screen
+     - openmpi
+     - openmpi-devel
+     - infiniband-diags 
+     - libmlx4
+     - perftest
+     - ntpdate
+     - python-docopt
+     - PyYAML
+     - python-configobj
+     - python-netifaces
+     - gcc-c++
+     - gcc-gfortran
+  tags: common
+
+- name: modprobe IB
+  modprobe: name={{ item }} state=present
+  with_items:
+   - ib_umad
+  tags: common

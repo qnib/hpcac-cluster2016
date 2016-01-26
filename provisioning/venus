@@ -1,0 +1,26 @@
+[p_master]
+venus001 ip_addr=192.168.12.181
+
+[p_master:vars]
+is_master=true
+
+[p_clients]
+docker1 ansible_user=vagrant ansible_ssh_pass=vagrant is_control=true ip_addr=192.168.12.11
+venus002 ip_addr=192.168.12.182
+venus003 ip_addr=192.168.12.183
+venus004 ip_addr=192.168.12.184
+venus005 ip_addr=192.168.12.185
+venus006 ip_addr=192.168.12.186
+venus007 ip_addr=192.168.12.187
+venus008 ip_addr=192.168.12.188
+
+[p_hosts:children]
+p_master
+p_clients
+[p_hosts:vars]
+nfs_server=venus001
+sensu_rmq_host=SENSU_HOST
+sensu_rmq_pwd=SENSU_PASSWD
+[venus:children]
+p_hosts
+

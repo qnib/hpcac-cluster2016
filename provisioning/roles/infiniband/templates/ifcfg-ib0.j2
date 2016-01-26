@@ -1,0 +1,8 @@
+DEVICE=ib0
+TYPE=Infiniband
+BOOTPROTO=static
+BROADCAST=10.0.0.255
+IPADDR=10.0.0.{{ ansible_default_ipv4.address.split('.')[-1] }}
+NETMASK=255.255.255.0
+NETWORK=10.0.0.0
+ONBOOT=yes

@@ -1,0 +1,1 @@
+OPTIONS="-H tcp://0.0.0.0:2376 --insecure-registry=192.168.12.11:5000 --cluster-store=consul://127.0.0.1:8500/network --cluster-advertise={{ ansible_default_ipv4.alias }}:2376"

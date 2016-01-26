@@ -1,0 +1,18 @@
+---
+# file: roles/hpcg/tasks/main.yml
+
+- name: install required packages
+  yum: name={{ item }} state=installed
+  with_items:
+    - openmpi-devel
+    - gcc-c++
+  tags: hpcg
+
+- name: create hpcg-buildscript
+  copy: src=hpcg_build.sh dest=/opt/hpcg_build.sh owner=root group=root mode=0755
+  tags: hpcg
+
+- name: Build HPCG
+  shell: /opt/hpcg_build.sh
+  when: is_master is defined
+  tags: hpcg

@@ -1,0 +1,41 @@
+---
+# file: roles/infiniband/tasks/main.yml
+
+- name: Put ib0 configuration
+  template: src=ifcfg-ib0.j2 dest=/etc/sysconfig/network-scripts/ifcfg-ib0 owner=root group=root mode=0644
+  tags: ib
+
+- name: be sure packages is installed
+  yum: name={{ item }} state=installed
+  with_items:
+   - git-core
+   - gcc
+   - python-devel
+   - python-pip
+   - libibverbs-devel
+   - Cython
+  tags:
+   - ib
+
+- name: Download python-rdma
+  git: repo=https://github.com/jgunthorpe/python-rdma.git dest=/opt/python-rdma/
+  tags:
+   - ib
+
+- name: Install python-rdma
+  shell: python setup.py install
+  args:
+    chdir: /opt/python-rdma/
+    creates: /usr/lib64/python2.7/site-packages/rdma/__init__.py
+  tags:
+   - ib
+
+- name: Put sib_metrics script
+  copy: src=ib_metrics.py dest=/usr/local/bin/ib_metrics.py owner=root group=root mode=0755
+  tags: ib
+
+#- name: add sensu to sudoers
+#  lineinfile: "dest=/etc/sudoers state=present regexp='^sensu' line='sensu ALL = (root) NOPASSWD: perfquery'"
+#  tags: 
+#   - ib
+#   - sudo

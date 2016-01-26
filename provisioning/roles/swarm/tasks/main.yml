@@ -1,0 +1,48 @@
+---
+# file: roles/swarm/tasks/main.yml
+
+- name: Pull swarm image
+  shell: docker pull swarm
+
+- name: Check for token file
+  stat: path=/scratch/swarm_token
+  register: stat_swarm_token
+  when: is_control is defined
+  tags: swarm
+
+- name: create SWARM token
+  shell: docker run --rm swarm create |tee > /scratch/swarm_token
+  register: swarm_token
+  when: is_control is defined and stat_swarm_token.stat.exists == False
+  tags: swarm
+
+- name: Check for token file
+  stat: path=/scratch/swarm_token
+  register: stat_swarm_token
+  tags: swarm
+
+- name: read SWARM token
+  shell: cat /scratch/swarm_token
+  register: swarm_token
+  when: stat_swarm_token.stat.exists == True
+  tags: swarm
+
+- debug: msg="SWARM token {{ swarm_token.stdout }}, my ip {{ ansible_default_ipv4.address }}"
+  when: stat_swarm_token.stat.exists == True
+  tags: swarm
+
+- name: List running nodes
+  shell: docker -H localhost:2376 ps 
+  register: docker_ps
+  tags: swarm
+
+- name: create swarm nodes
+  shell: docker -H tcp://localhost:2376 run -d --name swarm swarm join --addr={{ ansible_default_ipv4.address }}:2376 token://{{ swarm_token.stdout }}
+  when: docker_ps.stdout.find('swarm join') == -1
+  tags: swarm
+
+- name: create swarm manager
+  shell: docker -H tcp://localhost:2376 run -d -p 2375:2375 --name swarm-master swarm manage token://{{ swarm_token.stdout }}
+  when: is_control is defined and docker_ps.stdout.find('swarm manage') == -1
+  tags: swarm
+

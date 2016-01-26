@@ -1,0 +1,53 @@
+---
+# file: roles/sensu/tasks/main.yml
+
+- name: Put sensu repo in place.
+  copy: src=etc/yum.repos.d/sensu.repo dest=/etc/yum.repos.d/sensu.repo owner=root group=root mode=0644
+  tags: sensu
+
+- name: be sure sensu is installed
+  yum: name={{ item }} state=latest
+  with_items:
+   - sensu
+   - git-core
+  tags: sensu
+
+- name: Put sensu configuration in place
+  template: src=config.json.j2 dest=/etc/sensu/config.json owner=root group=root mode=0644
+  tags: 
+   - sensu
+   - cfg
+
+- name: Put server configuration file
+  template: src=client.json.j2 dest=/etc/sensu/conf.d/client.json owner=root group=root mode=0644
+  tags: 
+   - sensu
+   - cfg
+
+- name: Download sensu-community-plugins
+  git: repo=https://github.com/sensu/sensu-community-plugins.git dest=/opt/sensu-community-plugins
+  tags: sensu
+
+- name: Put systemd-file
+  copy: src=sensu/sensu-client.service dest=/usr/lib/systemd/system/sensu-client.service owner=root group=root mode=0644
+  tags: sensu
+
+- name: Check if reload of sensu.service is needed
+  shell: systemctl status sensu-client
+  register: systemctl_sensustat
+  ignore_errors: True
+  tags: sensu
+
+- name: reload systemd daemons
+  shell: systemctl daemon-reload
+  when: systemctl_sensustat|failed
+  tags: sensu
+
+- name: restart sensu daemon
+  service: name=sensu-client state=restarted
+  when: systemctl_sensustat|failed
+  tags: sensu
+
+- name: ensure sensu-client daemon is started
+  service: name=sensu-client state=started
+  tags: sensu

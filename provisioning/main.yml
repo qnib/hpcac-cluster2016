@@ -1,0 +1,12 @@
+---
+- hosts: all
+  sudo: yes
+
+  roles:
+    - common
+    - consul
+    - docker
+    - swarm
+    - hpcg
+    - sensu
+    - infiniband
