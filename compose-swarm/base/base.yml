@@ -1,5 +1,5 @@
 base:
-    net: global
+    networks: global
     volumes:
     - /scratch/:/scratch/
     dns: 127.0.0.1
@@ -13,4 +13,6 @@ base:
      - SENSU_FORCE_CLIENT=true
      - SENSU_RABBITMQ_HOST=${SENSU_RABBITMQ_HOST}
      - SENSU_RABBITMQ_PASSWD=${SENSU_RABBITMQ_HOST}
-
+networks
+  global:
+    external: true
