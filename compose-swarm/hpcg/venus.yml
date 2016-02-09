@@ -1,8 +1,7 @@
-hpcg:
+version: '2'
+services:
+  hpcg1:
     image: ${IMAGE}
-    hostname: hpcg${CNT}
-    container_name: hpcg${CNT}
-    net: global
     volumes:
      - /chome/:/chome/
      - /scratch/:/scratch/
@@ -22,10 +21,13 @@ hpcg:
      - DC_NAME=dc1
      - RUN_SERVER=false
      - CONSUL_CLUSTER_IPS=consul
-     - COLLECT_METRICS=true
-     - SUPERVISOR_SKIP_SRV=sensu-api,sensu-server
-     - SENSU_CLIENT=true
-     - SENSU_FORCE_CLIENT=true
-     - SENSU_RABBITMQ_HOST=${SENSU_RABBITMQ_HOST}
-     - SENSU_RABBITMQ_PASSWD=${SENSU_RABBITMQ_HOST}
-     - constraint:node==venus00${CNT}
+    networks:
+     - global
+    hostname: hpcg1
+    container_name: hpcg1
+    environment:
+     - constraint:node==venus001
+
+networks:
+  global:
+    external: true
