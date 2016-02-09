@@ -13,7 +13,7 @@
   tags: sensu
 
 - name: Put sensu configuration in place
-  template: src=config.json.j2 dest=/etc/sensu/config.json owner=root group=root mode=0644
+  template: src=config.json.j2 dest=/etc/sensu/settings.json owner=root group=root mode=0644
   tags: 
    - sensu
    - cfg

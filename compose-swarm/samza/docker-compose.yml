@@ -142,19 +142,11 @@ kafka-monitor:
 samza1:
     extends:
       file: base.yml
-      service: base
-    image: qnib/u-samza
+      service: samza
     hostname: samza1
     container_name: samza1
-    ports:
-     - 8042:8042
-     - 8088:8088
     environment:
      - constraint:node==venus001
-     - RUN_SERVER=false
-     - BOOTSTRAP_CONSUL=false
-     - SUPERVISOR_SKIP_SRV=zookeeper,kafka
-     - CONSUL_RM_SRV_CHECK=zookeeper,kafka
 
 samza3:
     extends:
@@ -162,9 +154,6 @@ samza3:
       service: samza
     hostname: samza3
     container_name: samza3
-    ports:
-     - "8042"
-     - "8088"
     environment:
      - constraint:node==venus003
 
@@ -174,9 +163,6 @@ samza5:
       service: samza
     hostname: samza5
     container_name: samza5
-    ports:
-     - "8042"
-     - "8088"
     environment:
      - constraint:node==venus005
 
@@ -186,8 +172,5 @@ samza6:
       service: samza
     hostname: samza6
     container_name: samza6
-    ports:
-     - "8042"
-     - "8088"
     environment:
      - constraint:node==venus006

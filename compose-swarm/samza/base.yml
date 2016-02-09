@@ -42,6 +42,9 @@ samza:
       file: base.yml
       service: base
     image: 192.168.12.11:5000/qnib/u-samza
+    ports:
+     - "8042"
+     - "8088"
     environment:
      - RUN_SERVER=false
      - BOOTSTRAP_CONSUL=false
