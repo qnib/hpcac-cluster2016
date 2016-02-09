@@ -6,8 +6,7 @@ Requires=docker.socket
 
 [Service]
 Type=notify
-EnvironmentFile=-/etc/sysconfig/docker
-ExecStart=/usr/bin/docker daemon -H fd:// $OPTIONS
+ExecStart=/usr/bin/docker daemon -H unix://var/run/docker.sock -H tcp://0.0.0.0:2376 --insecure-registry=192.168.12.11:5000 --cluster-store=consul://127.0.0.1:8500/network --cluster-advertise=enp4s0f0:2376
 MountFlags=slave
 LimitNOFILE=1048576
 LimitNPROC=1048576
