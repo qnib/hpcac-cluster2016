@@ -1,11 +1,27 @@
-slurmctld:
+version: '2'
+services:
+  slurmctld:
     image: 192.168.12.11:5000/qnib/slurmctld
-    extends:
-      file: ../base/base.yml
-      service: base
+    networks:
+     - global
+    volumes:
+     - /scratch/:/scratch/
+    dns: 127.0.0.1
+    privileged: true
     hostname: slurmctld
     container_name: slurmctld
-    ports:
-    - "16817:6817"
     environment:
+     - DC_NAME=dc1
+     - CONSUL_CLUSTER_IPS=consul
+     - COLLECT_METRICS=false
+     - SUPERVISOR_SKIP_SRV=sensu-api,sensu-server
+     - SENSU_CLIENT=true
+     - SENSU_FORCE_CLIENT=true
+     - SENSU_RABBITMQ_HOST=${SENSU_RABBITMQ_HOST}
+     - SENSU_RABBITMQ_PASSWD=${SENSU_RABBITMQ_HOST}
      - constraint:node==venus002
+    hostname: slurmctld
+    container_name: slurmctld
+networks:
+  global:
+    external: true
